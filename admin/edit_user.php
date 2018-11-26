@@ -29,10 +29,10 @@
                     redirect("users.php");
                 }
             }
-            }else{
-                $message2 = "You have to insert a password";
-            }
+        }else{
+            $message2 = "You have to insert a password";
         }
+    }
     ?>
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
