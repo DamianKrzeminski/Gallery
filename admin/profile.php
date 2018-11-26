@@ -2,25 +2,30 @@
     <?php include("includes/photo_library_modal.php");?>
     <?php if(!$session->isSignedIn()){redirect("login.php");}?>
     <?php
+    $message2 = null;
     $user = User::findById($session->user_id);
     if(isset($_POST['update'])){
-        if($user){
-            $user->username = $_POST['username'];
-            $user->email = $_POST['email'];
-            $user->first_name = $_POST['first_name'];
-            $user->last_name = $_POST['last_name'];
-            $user->password = password_hash($_POST['password'], PASSWORD_BCRYPT, array('cost'=>10));     
-            if(empty($_FILES['user_image'])){
-                $user->save();
-                redirect("users.php");
-                $session->message("The user has been updated");
-            }else{
-                $user->setFile($_FILES['user_image']);
-                $user->uploadPhoto();
-                $user->save();
-                $session->message("The user has been updated");
-                redirect("profile.php");
+        if(!empty($_POST['password'])){
+            if($user){
+                $user->username = $_POST['username'];
+                $user->email = $_POST['email'];
+                $user->first_name = $_POST['first_name'];
+                $user->last_name = $_POST['last_name'];
+                $user->password = password_hash($_POST['password'], PASSWORD_BCRYPT, array('cost'=>10));     
+                if(empty($_FILES['user_image'])){
+                    $user->save();
+                    redirect("users.php");
+                    $session->message("The user has been updated");
+                }else{
+                    $user->setFile($_FILES['user_image']);
+                    $user->uploadPhoto();
+                    $user->save();
+                    $session->message("The user has been updated");
+                    redirect("profile.php");
+                }
             }
+        }else{
+            $message2 = "You have to insert a password";
         }
     }
     ?>
@@ -36,6 +41,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Profile</h1>
+                    <p class="bg-danger"><?php echo $message2;?></p>
                     <p class="bg-success"><?php echo $message;?></p>
                     <div class="col-md-6 user_image_box">
                         <a href="#" data-toggle="modal" data-target="#photo-library"><img class="img-responsive" src="<?php echo $user->imagePathAndPlaceholder();?>" alt=""></a>
